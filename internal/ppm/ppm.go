@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Lunarisnia/vecm"
+	"github.com/Lunarisnia/vecm/vector3f"
 )
 
 type PPM struct {
@@ -23,9 +24,7 @@ func New(width int, height int) *PPM {
 }
 
 func (p *PPM) Insert(color vecm.Vector3f) {
-	color.X *= float64(255)
-	color.Y *= float64(255)
-	color.Z *= float64(255)
+	color = vector3f.Scale(color, float64(255))
 
 	color.X = math.Round(color.X)
 	color.Y = math.Round(color.Y)
