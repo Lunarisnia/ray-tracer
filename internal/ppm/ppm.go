@@ -29,6 +29,27 @@ func (p *PPM) Insert(color vecm.Vector3f) {
 	color.X = math.Round(color.X)
 	color.Y = math.Round(color.Y)
 	color.Z = math.Round(color.Z)
+	maxColor := 255.0
+	if color.X > maxColor {
+		color.X = maxColor
+	}
+	if color.Y > maxColor {
+		color.Y = maxColor
+	}
+	if color.Z > maxColor {
+		color.Z = maxColor
+	}
+
+	minColor := 0.0
+	if color.X < minColor {
+		color.X = minColor
+	}
+	if color.Y < minColor {
+		color.Y = minColor
+	}
+	if color.Z < minColor {
+		color.Z = minColor
+	}
 
 	p.buffer = append(p.buffer, fmt.Sprintf("%v %v %v\n", color.X, color.Y, color.Z))
 }
