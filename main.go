@@ -8,6 +8,21 @@ import (
 )
 
 func GetRayColor(r rt.Ray) vecm.Vector3f {
+	s := rt.Sphere{
+		Center: vecm.Vector3f{
+			X: 0,
+			Y: 0,
+			Z: -1,
+		},
+		Radius: 0.3,
+	}
+	// TODO: Proper intersection
+	if s.CasualIntersect(r) {
+		return vecm.Vector3f{
+			Y: 1,
+		}
+	}
+
 	return vecm.Vector3f{
 		X: 1,
 	}
