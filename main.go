@@ -7,7 +7,7 @@ import (
 	"github.com/Lunarisnia/vecm/vector3f"
 )
 
-func GetRayColor(r rt.Ray) vecm.Vector3f {
+func GetRayColor(r *rt.Ray) vecm.Vector3f {
 	s := rt.Sphere{
 		Center: vecm.Vector3f{
 			X: 0,
@@ -17,14 +17,14 @@ func GetRayColor(r rt.Ray) vecm.Vector3f {
 		Radius: 0.3,
 	}
 	// TODO: Proper intersection
-	if s.CasualIntersect(r) {
+	if s.Intersect(r) {
 		return vecm.Vector3f{
 			Y: 1,
 		}
 	}
 
 	return vecm.Vector3f{
-		X: 1,
+		X: 0,
 	}
 }
 
@@ -47,11 +47,12 @@ func main() {
 	origin := vecm.Vector3f{}
 
 	topLeftPixel := vector3f.Subtract(origin, vecm.Vector3f{Z: focalLength})
-	topLeftPixel = vector3f.Subtract(topLeftPixel, vector3f.Divide(pixelDeltaU, 2.0))
-	topLeftPixel = vector3f.Subtract(topLeftPixel, vector3f.Divide(pixelDeltaV, 2.0))
+	topLeftPixel = vector3f.Subtract(topLeftPixel, vector3f.Divide(viewportU, 2.0))
+	topLeftPixel = vector3f.Subtract(topLeftPixel, vector3f.Divide(viewportV, 2.0))
 
 	pixelOffset := vector3f.Add(pixelDeltaU, pixelDeltaV)
 	pixelOffset = vector3f.Scale(pixelOffset, 0.5)
+
 	pixel00 := vector3f.Add(topLeftPixel, pixelOffset)
 
 	image := ppm.New(imageWidth, imageHeight)
@@ -59,17 +60,18 @@ func main() {
 		for i := range imageWidth {
 			pixelCenterU := vector3f.Scale(pixelDeltaU, float64(i))
 			pixelCenterV := vector3f.Scale(pixelDeltaV, float64(j))
-			pixelCenter := vector3f.Add(pixel00, pixelCenterU)
+			// pixelCenter := vector3f.Add(pixelCenterU, pixelCenterV)
 
-			pixelCenter = vector3f.Add(pixel00, pixelCenterV)
+			pixelCenter := vector3f.Add(pixel00, pixelCenterU)
+			pixelCenter = vector3f.Add(pixelCenter, pixelCenterV)
+
 			rayDirection := vector3f.Normalize(vector3f.Subtract(pixelCenter, origin))
 
 			// TODO: The raycast
-			color := GetRayColor(rt.Ray{
+			color := GetRayColor(&rt.Ray{
 				Origin:    origin,
 				Direction: rayDirection,
 			})
-
 			image.Insert(color)
 		}
 	}

@@ -37,3 +37,13 @@ func (s *Sphere) CasualIntersect(r Ray) bool {
 
 	return true
 }
+
+func (s *Sphere) Intersect(r *Ray) bool {
+	oc := vector3f.Subtract(s.Center, r.Origin)
+	a := vector3f.Dot(r.Direction, r.Direction)
+	b := -2.0 * vector3f.Dot(r.Direction, oc)
+	c := vector3f.Dot(oc, oc) - (s.Radius * s.Radius)
+	discriminant := b*b - 4*a*c
+
+	return discriminant >= 0.0
+}
